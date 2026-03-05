@@ -1,18 +1,20 @@
-# Crawler (Streamlit)
+## Security Header Audit (OWASP-aligned)
 
-A scope-bound, async crawler for authorized security assessments and discovery.  
-**Does not bypass authentication or protections.** Supports authenticated crawling with provided credentials/cookies.
+The crawler performs a passive analysis of HTTP response headers for each page and assigns a **0–100 security score**. It flags issues and assigns **severity** (CRITICAL/HIGH/MEDIUM/LOW/INFO).
 
-## Features
-- Async crawl with concurrency & rate limits
-- Scope control: max depth, max pages, allowed hosts
-- Respects robots.txt (toggle)
-- Sitemap discovery and seeding
-- Auth: Basic, Cookie header, or form-based (with field names)
-- Findings: status, title, headers, link counts, forms, basic security header checks
-- Export CSV/JSON
+**Checks include:**
+- HSTS presence & quality (max-age, includeSubDomains, downgrade redirects)
+- CSP presence & risky directives (unsafe-inline/eval, wildcards)
+- Clickjacking protection (X-Frame-Options or CSP frame-ancestors)
+- MIME sniffing (X-Content-Type-Options: nosniff)
+- Referrer-Policy presence & strength
+- Permissions-Policy basics
+- Cookie hygiene (Secure/HttpOnly/SameSite, SameSite=None + Secure)
+- CORS misconfigurations (ACAO '*' + credentials, broad methods)
+- Caching on sensitive pages (no-store/no-cache)
+- Server/framework version disclosure
+- Deprecated headers (X-XSS-Protection)
 
-## Quick Start
-1. Clone repo and install deps:
-   ```bash
-   pip install -r requirements.txt
+Outputs:
+- **Pages** CSV/JSON with per-page `security_score`
+- **Issues** CSV/JSON with severities and recommendations
